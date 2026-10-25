@@ -15,7 +15,8 @@
 # Define a default value so it's not empty if the builder fails to provide it
 ARG BUILDPLATFORM=linux/amd64
 
-FROM --platform=$BUILDPLATFORM python:3.14.7-slim@sha256:ce40764625a4ff50df3548277632e7f96c4e77fe75fa848aae9885476e7df5a4 AS base
+# CHANGED: Downgraded to Python 3.11 to fix Pydantic compatibility
+FROM --platform=$BUILDPLATFORM python:3.11-slim AS base
 
 FROM base AS builder
 
@@ -34,8 +35,8 @@ ENV PYTHONUNBUFFERED=1
 # get packages
 WORKDIR /shoppingassistantservice
 
-# Grab packages from builder
-COPY --from=builder /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
+# CHANGED: Updated the copy path to match Python 3.11
+COPY --from=builder /usr/local/lib/python3.11/ /usr/local/lib/python3.11/
 
 # Add the application
 COPY . .
